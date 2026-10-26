@@ -1,0 +1,37 @@
+# Site settings — edit these to change what shows up across the whole site.
+title: Ysidro Magana
+description: Engineering portfolio of Ysidro Magana.
+url: "https://ymagana14.github.io"
+baseurl: ""
+
+# Shown under your name on the home page (one line each).
+intro_lines:
+  - "B.S. Mechanical Engineering · Your University"
+  - "Add a second line here (or delete it)"
+
+# Short "Now" note above the project grid. Leave empty to hide it.
+now: "Add a sentence about what you're working on or studying right now."
+
+# Header links. Leave a value empty to hide that icon.
+github: ymagana14
+linkedin: ""        # e.g. ysidromagana  (the part after linkedin.com/in/)
+email: ""           # e.g. you@example.com
+resume: ""          # e.g. /assets/Ysidro_Magana_Resume.pdf
+
+# Each file in _projects/ becomes a page at /projects/<file-name>/
+collections:
+  projects:
+    output: true
+    permalink: /projects/:name/
+
+defaults:
+  - scope:
+      type: projects
+    values:
+      layout: project
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor

@@ -1,0 +1,22 @@
+---
+layout: default
+---
+<section class="intro wrap">
+  <img class="intro-photo" src="{{ '/assets/img/headshot.svg' | relative_url }}" alt="{{ site.title }}">
+  <div>
+    <h1 class="intro-name">{{ site.title }}</h1>
+    {% for line in site.intro_lines %}<p class="intro-line">{{ line }}</p>{% endfor %}
+  </div>
+</section>
+
+<section id="projects" class="wrap">
+  {% if site.now != "" %}<p class="now-note"><span class="now-label">Now</span> {{ site.now }}</p>{% endif %}
+
+  {% comment %} Projects are sorted by the `order` number in each file (lowest first). {% endcomment %}
+  {% assign projects = site.projects | sort: "order" %}
+  <div class="grid">
+    {% for project in projects %}
+      {% include project-card.html project=project %}
+    {% endfor %}
+  </div>
+</section>

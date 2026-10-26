@@ -1,0 +1,28 @@
+---
+layout: default
+---
+<article class="project wrap">
+  <a class="back-link" href="{{ '/#projects' | relative_url }}">← All projects</a>
+
+  <header class="project-header">
+    {% if page.context %}<p class="card-context">{{ page.context }}</p>{% endif %}
+    <h1>{{ page.title }}</h1>
+    {% if page.summary %}<p class="project-summary">{{ page.summary }}</p>{% endif %}
+    {% if page.tags %}
+    <ul class="tags">{% for tag in page.tags %}<li>{{ tag }}</li>{% endfor %}</ul>
+    {% endif %}
+    {% if page.links %}
+    <p class="project-links">
+      {% for link in page.links %}<a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }} ↗</a>{% endfor %}
+    </p>
+    {% endif %}
+  </header>
+
+  {% if page.image %}
+  <img class="project-hero" src="{{ page.image | relative_url }}" alt="{{ page.title }}">
+  {% endif %}
+
+  <div class="prose">
+    {{ content }}
+  </div>
+</article>

@@ -1,0 +1,14 @@
+{% assign p = include.project %}
+<a class="card" href="{{ p.url | relative_url }}">
+  <div class="card-media">
+    <img src="{{ p.image | default: '/assets/img/placeholder.svg' | relative_url }}" alt="{{ p.title }}" loading="lazy">
+    {% if p.preview %}<video class="card-preview" data-src="{{ p.preview | relative_url }}" muted loop playsinline preload="none" aria-hidden="true"></video>{% endif %}
+  </div>
+  <div class="card-body">
+    {% if p.context %}<p class="card-context">{{ p.context }}</p>{% endif %}
+    <h3 class="card-title">{{ p.title }}</h3>
+    {% if p.summary %}<p class="card-summary">{{ p.summary }}</p>{% endif %}
+    {% if p.tags %}<ul class="tags">{% for tag in p.tags %}<li>{{ tag }}</li>{% endfor %}</ul>{% endif %}
+    <span class="card-cta" aria-hidden="true">View project <span class="card-arrow">→</span></span>
+  </div>
+</a>
