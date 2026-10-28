@@ -131,6 +131,7 @@ a:hover { text-decoration: underline; }
 .prose figure { margin: 24px 0; }
 .prose figure img { margin: 0; width: 100%; }
 .prose figcaption { color: var(--muted); font-size: 14px; margin-top: 8px; text-align: center; }
+.prose figure.video video { width: auto; max-width: 100%; max-height: 640px; margin: 0 auto; background: #000; }
 .img-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; align-items: start; }
 .img-row img { margin: 0; width: 100%; }
 .callout {

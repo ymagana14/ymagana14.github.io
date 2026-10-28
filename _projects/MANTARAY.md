@@ -81,6 +81,13 @@ In the pool test, the servos drove the foam forward for 175 s, paused 10 s, then
   <figure><img src="/assets/img/projects/MANTARAY/pool-return.jpg" alt="Prototype returning to horizontal"><figcaption>Returned to horizontal</figcaption></figure>
 </div>
 
+<figure class="video">
+  <video controls playsinline preload="none" poster="/assets/video/MANTARAY/leadscrew-dock-test.jpg">
+    <source src="/assets/video/MANTARAY/leadscrew-dock-test.mp4" type="video/mp4">
+  </video>
+  <figcaption>Dockside test of the lead-screw assembly: the servos drive the buoyancy foam along the screws, commanded from a laptop</figcaption>
+</figure>
+
 ---
 
 ## 2. Navigation control system
