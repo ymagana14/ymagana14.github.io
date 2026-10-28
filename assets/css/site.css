@@ -127,6 +127,19 @@ a:hover { text-decoration: underline; }
 .prose pre code { background: none; padding: 0; }
 .about { max-width: 760px; padding-top: 40px; padding-bottom: 80px; }
 
+/* Figures with captions, and rows of images shown side by side */
+.prose figure { margin: 24px 0; }
+.prose figure img { margin: 0; width: 100%; }
+.prose figcaption { color: var(--muted); font-size: 14px; margin-top: 8px; text-align: center; }
+.img-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; align-items: start; }
+.img-row img { margin: 0; width: 100%; }
+.callout {
+  background: var(--bg-soft); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  border-radius: 8px; padding: 14px 18px; margin: 24px 0;
+}
+.callout p { margin: 0; }
+.formula { font-family: "JetBrains Mono", monospace; font-size: 14px; background: var(--bg-soft); border-radius: 8px; padding: 10px 14px; overflow-x: auto; }
+
 /* ---------- Footer ---------- */
 .site-footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; padding: 24px 0; }
 .site-footer p { margin: 0; }
