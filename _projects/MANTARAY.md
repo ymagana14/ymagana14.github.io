@@ -129,14 +129,10 @@ I designed the chassis and shifting mechanism in SolidWorks and managed the full
   <figcaption>Full assembly: hull, lead-screw foam sliders, thrusters, and antenna mast</figcaption>
 </figure>
 
-<figure>
-  <img src="/assets/img/projects/MANTARAY/cad-end.jpg" alt="End view showing thrusters and foam">
-  <figcaption>End view: three thrusters and the two foam blocks</figcaption>
-</figure>
-
 <div class="img-row">
-  <figure><img src="/assets/img/projects/MANTARAY/cad-vertical-iso.jpg" alt="Isometric render of MANTARAY in its vertical orientation"><figcaption>Vertical orientation: three thrusters on top, foam blocks riding the lead screws</figcaption></figure>
-  <figure><img src="/assets/img/projects/MANTARAY/cad-vertical-front.jpg" alt="Front view of MANTARAY showing the lead screw and foam block"><figcaption>Front view: lead screw running the length of the hull</figcaption></figure>
+  <figure><img src="/assets/img/projects/MANTARAY/cad-v2-iso.jpg" alt="Isometric render of the MANTARAY assembly"><figcaption>Isometric view</figcaption></figure>
+  <figure><img src="/assets/img/projects/MANTARAY/cad-v2-front.jpg" alt="Front view of MANTARAY showing both lead screws and foam blocks"><figcaption>Front view: both lead screws and foam blocks</figcaption></figure>
+  <figure><img src="/assets/img/projects/MANTARAY/cad-v2-side.jpg" alt="Side view of MANTARAY showing the lead screw along the hull"><figcaption>Side view: lead screw along the hull</figcaption></figure>
 </div>
 
 <div class="img-row">
@@ -219,9 +215,49 @@ The vehicle carries two identical 14.8 V, 15.6 Ah batteries (230.9 Wh each). The
 - **Full vehicle integrated in one SolidWorks assembly**, from hull to antenna mast.
 - **Power budget confirms a 3-waypoint mission** uses under half the thruster battery, with a 25% margin.
 
-## What I'd improve next
+---
 
-- Rebuild around a standard 4 in. tube with Blue Robotics connectors to avoid custom-machined end-cap fixtures and improve sealing.
-- Add Hall-effect or reed-switch limit sensors so the two lead screws stay in sync, instead of relying on timed servo commands.
-- Run full in-water navigation trials and measure thrust to refine the yaw model.
-- Upgrade to two-way telemetry (e.g. LoRa) so operators can see the vehicle's state in real time.
+## Conclusion
+
+This project took MANTARAY from a conceptual architecture to a fully realized physical prototype over the course of one year, marking a significant milestone in the development of autonomous marine instrumentation.
+
+A primary achievement was the empirical validation of the vehicle's novel flipping mechanism — the core concept was tested and proven viable. The foundational navigation architecture was established and verified independently of the main chassis, and the onboard sensor suite went through integration testing to ensure seamless connectivity and data cohesion.
+
+Autonomous underwater vehicles represent the future of oceanography. As the Schmidt Ocean Institute notes, AUVs let a research ship collect far more data per cruise while focusing on other tasks, with greater speed, mobility, and range than tethered ROVs. Beyond efficiency, platforms like MANTARAY address a critical safety concern: traditional data collection by scuba diving exposes researchers to volatile and potentially life-threatening environments, and autonomous profilers can replace or supplement divers to remove that risk.
+
+While this year's milestones provide a robust proof of concept, they are just the beginning. Future work will focus on full system integration, open-water field testing, and optimizing autonomous path planning. Ultimately, MANTARAY aims to give the scientific community a tool for scalable, continuous, and risk-free marine data acquisition.
+
+---
+
+## Future outlook
+
+This year's scope was to build a functional prototype that validates the shifting-mass concept for pitching and flipping. Physical testing confirmed the core mechanism works; several subsystems now need systematic optimization in future iterations.
+
+### Mechanical system optimization
+
+- **Waterproofing and tolerances.** No water ingress was observed in final lab testing, but future designs should use commercial off-the-shelf marine components, such as Blue Robotics enclosures, to guarantee hydrostatic sealing. Precision-machined, manufacturer-matched tubes would eliminate the custom aluminum fixtures that couple the end caps.
+- **Standard 4 in. form factor.** Moving the hull and internal lead-screw assemblies to a standard 4 in. diameter would allow modular coupler flanges for robust, high-tolerance, watertight assemblies.
+- **Closed-loop shifting mechanism.** Time-based, open-loop servo commands drift over time. Underwater magnetic reed switches or Hall-effect sensors would confirm when each drive nut reaches its limit, keeping both masses synchronized. Alternatively, a single-actuator differential linkage could drive both lead screws at once and prevent synchronization errors entirely.
+- **Internal layout and assembly.** Future iterations need a streamlined battery-swap mechanism, better cable routing, and an external data port for tethered programming. Today, seating the end caps takes a dead-blow mallet and wedging to break the vacuum seal; a locking ring or flange-bolt pattern would make assembly easier and reduce structural stress.
+
+### Navigation and control
+
+- **In-water trials.** The navigation algorithms were verified independently; full-scale, in-water closed-loop navigation trials inside the physical vehicle are the next milestone.
+- **Plant model and yaw authority.** Empirical thrust characterization will refine the rotational model and mass moment of inertia, and hydrodynamic testing will show whether differential thrust alone gives enough yaw authority on the surface or whether fins or auxiliary thrusters are needed.
+- **Two-way telemetry.** The current system uses one-way communication: waypoints are uploaded before deployment and the vehicle navigates by onboard GPS. Operators can't see its state, position, pitch, or faults (like leaks or collisions) in real time. A two-way acoustic or RF telemetry link, integrated into the mission-control GUI, is critical for monitoring, live data streaming, and reliable retrieval. The RF antenna array should also be evaluated to improve surface communication.
+
+### Sensor integration
+
+Sensor communication and data-fusion pipelines are validated, but ruggedized mounting brackets still need to be built. Future work should design low-drag external sensor cowlings, improve internal wire management, and move from point-to-point wiring to a custom PCB to reduce electromagnetic interference and failure points.
+
+### Power and mission simulation
+
+Future testing should use a hardware-in-the-loop simulation of a complete multi-waypoint mission, followed by open-water field validation to benchmark real battery consumption and endurance against the power budget.
+
+---
+
+## Final thoughts
+
+Developing an underwater platform has been an incredibly rewarding endeavor. Operating in a marine environment introduces unique engineering constraints that forced our team to find simple, elegant, and unconventional solutions. Water is an unforgiving medium — its corrosive nature and hydrostatic pressure mean the very environment we set out to explore can compromise mechanical and electrical integrity. Completing a fully autonomous profiler is achievable, but it demands meticulous attention to detail and tight interdisciplinary collaboration. As the project moves into system integration and field testing, rigorous documentation, synchronized design sessions, and transparent timeline management will be vital.
+
+Our team is deeply grateful to the Robotic Systems Laboratory for the specialized resources, technical wisdom, and guidance that made this build possible, and to our advisors for their support. We're proud of the foundations laid this year and grateful for the chance to build a platform that can make a real, positive impact on oceanographic research — and we look forward to the future iterations of MANTARAY.
