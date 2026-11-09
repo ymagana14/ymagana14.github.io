@@ -109,6 +109,13 @@ On the surface, MANTARAY steers toward each waypoint using GPS, an IMU for headi
 
 The navigation algorithms were verified on their own; integrating them into the physical vehicle for in-water closed-loop trials is the next step.
 
+<figure class="video">
+  <video controls playsinline preload="none" poster="/assets/img/projects/MANTARAY/navigationprofiler.png">
+    <source src="/assets/video/MANTARAY/navigation-simulation.mp4" type="video/mp4">
+  </video>
+  <figcaption>A simulated demonstration of the profiler moving using the control logic planned out</figcaption>
+</figure>
+
 ---
 
 ## Results
