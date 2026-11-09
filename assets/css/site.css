@@ -133,12 +133,24 @@ a:hover { text-decoration: underline; }
 .prose figcaption { color: var(--muted); font-size: 14px; margin-top: 8px; text-align: center; }
 .prose figure.video video { width: auto; max-width: 100%; max-height: 640px; margin: 0 auto; background: #000; }
 .img-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; align-items: start; }
-.img-row img { margin: 0; width: 100%; }
+.prose .img-row img { margin: 0 auto; width: 100%; max-height: 480px; object-fit: contain; }
 .callout {
   background: var(--bg-soft); border: 1px solid var(--border); border-left: 3px solid var(--accent);
   border-radius: 8px; padding: 14px 18px; margin: 24px 0;
 }
 .callout p { margin: 0; }
+.prose table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0 24px; }
+.prose th, .prose td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+.prose th { background: var(--bg-soft); font-weight: 600; }
+.prose td.num, .prose th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.prose tr.total td { font-weight: 600; background: var(--tag-bg); }
+.table-scroll { overflow-x: auto; }
+.on { color: var(--accent); font-weight: 600; text-align: center; }
+.off { color: var(--muted); text-align: center; }
+.meter { margin: 6px 0 18px; }
+.meter-label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px; }
+.meter-bar { height: 12px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+.meter-fill { height: 100%; background: var(--accent); }
 .formula { font-family: "JetBrains Mono", monospace; font-size: 14px; background: var(--bg-soft); border-radius: 8px; padding: 10px 14px; overflow-x: auto; }
 
 /* ---------- Footer ---------- */

@@ -2,7 +2,7 @@
 title: "MANTARAY: Autonomous Underwater Profiler"
 context: Senior Design Capstone · Santa Clara University, Robotic Systems Lab · 2025–2026
 summary: A low-cost autonomous underwater vehicle that navigates to GPS waypoints and dives to collect water-column data for marine researchers. I designed and built the lead-screw mechanism that flips the vehicle between horizontal and vertical, and developed its waypoint-navigation control system.
-tags: [SolidWorks, MATLAB, Simulink, CFD, Arduino, Controls]
+tags: [SolidWorks, MATLAB, Simulink, CFD, Excel, Arduino, Controls]
 image: /assets/img/projects/MANTARAY/cover.jpg
 order: 1
 ---
@@ -14,9 +14,11 @@ Designed as part of a senior capstone project under the guidance of the Robotic 
 **Mission goals:** navigate autonomously to waypoints, dive to 30 m and collect water-column data (pH, temperature, dissolved oxygen, conductivity), and complete 3 dives in under 20 minutes — all deployable by one person from shore.
 
 <div class="callout" markdown="1">
-**My contributions:** I owned two of the vehicle's core subsystems:
+**My contributions:**
 1. **The lead-screw flipping mechanism** — designed, analyzed, built, and pool-tested it.
 2. **The navigation control system** — modeled the GPS waypoint guidance and PI heading controller in Simulink.
+3. **The full-vehicle CAD** — designed the chassis and shifting mechanism and managed the complete SolidWorks assembly.
+4. **The power budget** — sized the two-battery system against a full mission profile.
 </div>
 
 ---
@@ -118,11 +120,104 @@ The navigation algorithms were verified on their own; integrating them into the 
 
 ---
 
+## 3. Full-vehicle CAD
+
+I designed the chassis and shifting mechanism in SolidWorks and managed the full vehicle assembly, integrating every subsystem into one model: the acrylic hull and end caps, the three thrusters, the T-slot rails and lead screws that carry the buoyancy foam, the internal electronics, and the antenna mast. Keeping one master assembly let the team check fit, clearances, and center of gravity before anything was built.
+
+<figure>
+  <img src="/assets/img/projects/MANTARAY/cad-iso.jpg" alt="Isometric render of the full MANTARAY assembly">
+  <figcaption>Full assembly: hull, lead-screw foam sliders, thrusters, and antenna mast</figcaption>
+</figure>
+
+<div class="img-row">
+  <figure><img src="/assets/img/projects/MANTARAY/cad-side.jpg" alt="Side view of the assembly"><figcaption>Side view</figcaption></figure>
+  <figure><img src="/assets/img/projects/MANTARAY/cad-end.jpg" alt="End view showing thrusters and foam"><figcaption>End view: three thrusters and the two foam blocks</figcaption></figure>
+</div>
+
+<div class="img-row">
+  <figure><img src="/assets/img/projects/MANTARAY/cad-vertical-iso.jpg" alt="Isometric render of MANTARAY in its vertical orientation"><figcaption>Vertical orientation: three thrusters on top, foam blocks riding the lead screws</figcaption></figure>
+  <figure><img src="/assets/img/projects/MANTARAY/cad-vertical-front.jpg" alt="Front view of MANTARAY showing the lead screw and foam block"><figcaption>Front view: lead screw running the length of the hull</figcaption></figure>
+</div>
+
+<div class="img-row">
+  <figure><img src="/assets/img/projects/MANTARAY/cad-iterations.jpg" alt="Design iterations of the assembly"><figcaption>Design progression</figcaption></figure>
+  <figure><img src="/assets/img/projects/MANTARAY/cad-drawing.jpg" alt="Engineering drawing of the MANTARAY assembly"><figcaption>Assembly drawing</figcaption></figure>
+</div>
+
+---
+
+## 4. Power budget
+
+To make sure MANTARAY could finish a mission on one charge, I built a power budget in Excel that walks through a mission phase by phase and tracks which components are on in each phase.
+
+### Mission profile (per waypoint)
+
+<div class="table-scroll">
+<table>
+  <thead>
+    <tr><th>Phase</th><th class="num">Time</th><th>Thrusters (3)</th><th>Servos (2)</th><th>Arduino, GPS, IMU</th><th>Science sensors</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Transit on surface (100 m at 1 m/s)</td><td class="num">100 s</td><td class="on">ON</td><td class="off">off</td><td class="on">ON</td><td class="on">ON</td></tr>
+    <tr><td>Flip to vertical</td><td class="num">120 s</td><td class="off">off</td><td class="on">ON</td><td class="on">ON</td><td class="off">off</td></tr>
+    <tr><td>Dive (30 m at 0.25 m/s)</td><td class="num">120 s</td><td class="on">ON</td><td class="off">off</td><td class="on">ON</td><td class="on">ON</td></tr>
+    <tr><td>Rise (30 m at 1 m/s)</td><td class="num">30 s</td><td class="off">off</td><td class="off">off</td><td class="on">ON</td><td class="on">ON</td></tr>
+    <tr><td>Flip to horizontal</td><td class="num">120 s</td><td class="off">off</td><td class="on">ON</td><td class="on">ON</td><td class="off">off</td></tr>
+    <tr class="total"><td>Total per waypoint</td><td class="num">490 s</td><td colspan="4">Thrusters on 220 s · servos on 240 s</td></tr>
+  </tbody>
+</table>
+</div>
+
+### Two-battery system
+
+The vehicle carries two identical 14.8 V, 15.6 Ah batteries (230.9 Wh each). The thrusters — by far the largest load — run on one, and the servos, Arduinos, and sensors run on the other. I sized both for a **3-waypoint mission with a 25% safety margin**.
+
+<div class="table-scroll">
+<table>
+  <thead><tr><th>Battery 1 — thrusters</th><th class="num">Value</th></tr></thead>
+  <tbody>
+    <tr><td>Max current (3 thrusters × 22 A)</td><td class="num">66 A</td></tr>
+    <tr><td>Assumed average current (50% of max)</td><td class="num">33 A</td></tr>
+    <tr><td>Energy per waypoint (220 s of thrust)</td><td class="num">29.9 Wh</td></tr>
+    <tr><td>Energy for 3 waypoints</td><td class="num">89.5 Wh</td></tr>
+    <tr class="total"><td>With 25% margin</td><td class="num">111.9 Wh</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="meter">
+  <div class="meter-label"><span>Battery 1 used</span><span>48% (119 Wh left)</span></div>
+  <div class="meter-bar"><div class="meter-fill" style="width:48.5%"></div></div>
+</div>
+
+<div class="table-scroll">
+<table>
+  <thead><tr><th>Battery 2 — electronics</th><th class="num">Value</th></tr></thead>
+  <tbody>
+    <tr><td>Servos (2×)</td><td class="num">9.99 Wh</td></tr>
+    <tr><td>Arduinos (2×)</td><td class="num">0.06 Wh</td></tr>
+    <tr><td>Science sensors (pH, temperature, conductivity, DO, pressure)</td><td class="num">0.23 Wh</td></tr>
+    <tr class="total"><td>Total for 3 waypoints, with 25% margin</td><td class="num">10.28 Wh</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="meter">
+  <div class="meter-label"><span>Battery 2 used</span><span>4.5% (220.6 Wh left)</span></div>
+  <div class="meter-bar"><div class="meter-fill" style="width:4.5%"></div></div>
+</div>
+
+**Takeaway:** even with a 25% margin, a 3-waypoint mission uses under half of the thruster battery and under 5% of the electronics battery. The thrusters dominate energy use, so surface transit distance and dive speed are the main levers on range.
+
+---
+
 ## Results
 
 - **Flipping mechanism proven** in pool testing — the core concept of the vehicle works.
 - **Actuators sized with a ~2× safety factor**, avoiding a custom gearbox, with a self-locking lead screw.
 - **Navigation architecture modeled and verified** in Simulink.
+- **Full vehicle integrated in one SolidWorks assembly**, from hull to antenna mast.
+- **Power budget confirms a 3-waypoint mission** uses under half the thruster battery, with a 25% margin.
 
 ## What I'd improve next
 
