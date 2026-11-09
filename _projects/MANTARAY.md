@@ -129,10 +129,10 @@ I designed the chassis and shifting mechanism in SolidWorks and managed the full
   <figcaption>Full assembly: hull, lead-screw foam sliders, thrusters, and antenna mast</figcaption>
 </figure>
 
-<div class="img-row">
-  <figure><img src="/assets/img/projects/MANTARAY/cad-side.jpg" alt="Side view of the assembly"><figcaption>Side view</figcaption></figure>
-  <figure><img src="/assets/img/projects/MANTARAY/cad-end.jpg" alt="End view showing thrusters and foam"><figcaption>End view: three thrusters and the two foam blocks</figcaption></figure>
-</div>
+<figure>
+  <img src="/assets/img/projects/MANTARAY/cad-end.jpg" alt="End view showing thrusters and foam">
+  <figcaption>End view: three thrusters and the two foam blocks</figcaption>
+</figure>
 
 <div class="img-row">
   <figure><img src="/assets/img/projects/MANTARAY/cad-vertical-iso.jpg" alt="Isometric render of MANTARAY in its vertical orientation"><figcaption>Vertical orientation: three thrusters on top, foam blocks riding the lead screws</figcaption></figure>
