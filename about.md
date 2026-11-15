@@ -11,7 +11,11 @@ permalink: /about/
 <img class="about-photo" src="/assets/img/about-photo.jpg" alt="Ysidro Magana at Santa Clara University's Mission Church">
 <div markdown="1">
 
-I'm a mechanical engineer from Santa Clara University with a minor in electrical engineering and an emphasis in mechatronics, control systems, and advanced manufacturing. I like projects where mechanical design, electronics, and software all have to work together — from tuning a PID controller on a thrust-balanced seesaw to designing the shifting-mass mechanism for an autonomous underwater profiler.
+Hi, my name is Ysidro Magana and I’m a **Mechanical Engineer** who minoring in **Electrical Engineering** with a strong background and interest in control systems, robotics and overall mechatronics projects. I’m driven by curiosity and always have a competative and eager mindset to challenge myself. Throughout college, I took every opportunity to grow, from hands-on experience in Formula SAE, to completing internships every summer, to working on leading research projects. All experiences that have helped me refine my technical skills and deepen my passion for engineering.
+
+Outside of academics, I’m highly involved in leadership and community and futbol. I proudly served as Co-President of SHPE (Society of Hispanic Professional Engineers) at Santa Clara University, where I work to uplift and support underrepresented students in STEM. Through SHPE, I’ve built a strong network, helped lead impactful initiatives, and developed my abilities as a communicator and team builder. Through this work I was recognized and given the community service and leadership award from the Mechancial Engineering Department. 
+
+I approach every challenge with dedication and discipline. I’m optimistic by nature, but I also stay grounded in reality, always trying to learn, adapt, and improve.
 
 I'm currently an **Engineering Technician at Tesla**, running and maintaining tests for the Camera Integration team. Before that, I interned at Santa Clara's Robotic Systems Lab, Medtronic, and Taylor Farms, working across autonomous marine vehicles, medical-device manufacturing, and industrial automation.
 

@@ -107,6 +107,11 @@ On the surface, MANTARAY steers toward each waypoint using GPS, an IMU for headi
 
 **Turning dynamics.** The controller's torque command becomes a thrust difference between the two thrusters (τ = ΔF·d). I linearized the manufacturer's thrust curve to F = m·PWM so the controller can convert force directly to PWM commands for the ESCs. The vehicle's yaw response is modeled as τ = J·θ″ + b·θ′.
 
+<div class="img-row">
+  <figure><img src="/assets/img/projects/MANTARAY/nav-turning-fbd.png" alt="Diagram of the profiler turning toward a waypoint with thruster forces F1 and F2"><figcaption>Thrusters F₁ and F₂, spaced a distance D apart, turn the vehicle toward the bearing of the desired waypoint</figcaption></figure>
+  <figure><img src="/assets/img/projects/MANTARAY/nav-thrust-mapping.png" alt="Torque equation derivation and linearized thrust curve"><figcaption>Turning the PI output into a PWM difference, using a linear fit of the thrust curve</figcaption></figure>
+</div>
+
 **Translational dynamics.** Integrating heading and forward speed (ẋ = v·cos θ, ẏ = v·sin θ) gives the vehicle's position, which feeds back to close the navigation loop.
 
 The navigation algorithms were verified on their own; integrating them into the physical vehicle for in-water closed-loop trials is the next step.
