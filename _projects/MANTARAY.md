@@ -40,11 +40,11 @@ One can see that moving braodside produces a much wider seperated wake and highe
 
 ### Choosing the approach
 
-We considered a moving lever arm, a buoyancy bladder, and thruster-driven pitching. A bladder was ruled out because sealing water inside a profiler — next to the batteries and electronics — is a well-known failure point. Our guiding requirements were **simplicity** (low cost, few single points of failure, easy for a non-engineer to maintain) and **functionality**. The lead-screw design was the best balance of the two.
+We considered a moving lever arm, a buoyancy bladder, and thruster driven pitching. A bladder was ruled out because sealing water inside a profiler next to the batteries and electronics is and was a well known failure point (proven through a previouses teams undertakings). Our guiding requirements were **simplicity** (low cost, few single points of failure, easy for a non-engineers to maintain) and **functionality**. The lead screw design was the best balanced option all the ideas.
 
 ### How it works
 
-Two servo-driven lead screws slide blocks of syntactic buoyancy foam (yellow below) along the hull. Moving the foam away from the center of mass creates a moment arm, so the vehicle rotates until its center of mass sits directly under its center of buoyancy. In the vertical position the net torque is zero and the vehicle is naturally stable — if a current tips it, it rights itself.
+Two servo-driven lead screws slide blocks of buoyancy foam (yellow below) along the tube. Moving the foam away from the center of mass creates a moment arm, so the vehicle rotates until its center of mass sits directly under its center of buoyancy. In the vertical position the net torque is zero and the vehicle is naturally stable, if a current tips it, it rights itself.
 
 <div class="img-row">
   <img src="/assets/img/projects/MANTARAY/flip-1-horizontal.png" alt="Free body diagram: horizontal">
@@ -56,93 +56,15 @@ Two servo-driven lead screws slide blocks of syntactic buoyancy foam (yellow bel
 
 ### Sizing the actuators
 
-There are very few actuators made for underwater use, so we were limited to the Blue Trail servos (Hitec HSR-M9382TH) the lab had tested, rated at **3.3 N·m**. I derived the foam volume needed to balance the vehicle from a torque balance in the horizontal position, then used power-screw equations to find the torque needed to move it:
+There are very few actuators made for underwater use, so we were limited to the Blue Trail servos (Hitec HSR-M9382TH) the lab had tested, rated at **3.3 N·m**. I derived the foam volume needed to balance the vehicle from a torque balance in the horizontal position, then used power screw equations to find the torque needed to move it:
 
 <p class="formula">T_push = (F·dₚ/2)·[(f·π·dₚ + P·cos α) / (π·dₚ·cos α − f·P)] + T_collar</p>
 
 - Moving the foam needs **under 1 N·m**.
-- Even in the worst case — displacing the buoyant force of the entire profiler — it needs about **1.6 N·m**, a **safety factor of ~2** on the stock servo. That meant **no custom gearbox was needed**.
-- I also checked the lowering torque to make sure the foam won't drift once positioned. It's positive, so the lead screw is **self-locking** and won't backdrive under load.
+- Even in the worst case, displacing the buoyant force of the entire profiler, it needs about **1.6 N·m**, a **safety factor of ~2** on the stock servo. That meant **no custom gearbox was needed**.
+- I also checked the torque and forces needed for a **self-locking** nut and found that under the loads that we would expirece there would be no backdrive ecpireced by the nut.
 
-I wrote these calculations as a MATLAB script so the team could re-run them as the design changed:
-
-<div class="callout code-callout" markdown="1">
-**MATLAB · Foam sizing, lead-screw torque, and backdrive check**
-
-```matlab
-clc;
-clear;
-
-% --- 1. DESIGN REQUIREMENTS & CONSTANTS ---
-rho_water = 1025;    % Density of saltwater (kg/m^3)
-rho_foam  = 192;     % Density of buoyancy foam (kg/m^3)
-g = 9.81;            % Gravity (m/s^2)
-
-% --- 2. PROFILER PROPERTIES (FIXED BODY) ---
-V_p = 0.033981464453;           % Volume of profiler hull (m^3)
-m_p = 20.4;                     % Mass of profiler (kg)
-x1 = 0.4572;                     % Distance of center of bouyacy of tube to refernce point
-x2 = 0.6858;                  % Center of Mass / LCG of the profiler (m)
-x3 = x2;                      % Rn they are the same distacance 
-
-Fg = m_p*g*x2;
-Ft = rho_water*g*V_p
-
-a = 2*m_p*x2;
-b = rho_water*V_p*x1;
-c = x3*rho_foam;
-
-V_foam = ( a - b ) / c;
-
-fprintf(" Volume of foam needed to not cause a not rotational torque: %.6f mm^3 \n",V_foam*1e9)
-
-% Calculate required length of foam block (assuming it's a cylinder)
-d_buoyancy = 0.16;    % Diameter of foam block (m)
-A_foam = (pi * (d_buoyancy/2)^2); % Cross-sectional area of foam
-Length_foam = ( V_foam/2 ) / A_foam;
-
-fprintf("Length of boyancy foam needed: %.6f mm\n", Length_foam);
-
-% Lead Screw Characteristics (ACME 3/8'')
-D = 0.0127; % Major diameter
-P = 0.00254; % Pitch (m)
-a = 14.5; % thread wall angle in degrees 
-d_p = 0.01143; % pitch diameter in m 
-
-% Net Buoyancy (The force pushing BACK against your system)
-F_load = V_foam*rho_foam*g;
-
-% Calculating Torque
-f = 0.2; % coefficient of friction
-d_c = 2*D; % collar diameter
-f_c = 0.15; % collar coefficient of friction
-
-T_c = f_c * F_load * (d_c/2); 
-T_push = ((F_load * d_p)/2) * (((f * pi * d_p) + P * cosd(a)) / ...
-         ((pi * d_p * cosd(a)) - (f * P))) + T_c;
-
-% --- BACKDRIVE CHECK ---
-% Lead angle (lambda) is the angle of the threads
-lambda = atand(P / (pi * d_p));
-
-% Torque required to LOWER the load (if this is negative, it will backdrive)
-T_lower = ((F_load * d_p)/2) * (((f * pi * d_p * cosd(a)) - (P)) / ...
-          ((pi * d_p * cosd(a)) + (f * P))) + T_c;
-
-fprintf('Torque needed to move load: %.6f N*m\n', T_push);
-
-if T_lower > 0
-    fprintf('STATUS: The system is SELF-LOCKING. No backdrive will occur.\n');
-else
-    fprintf('STATUS: WARNING! The system may BACKDRIVE. External force exceeds friction.\n');
-end
-
-% Thrust Generated (Efficiency-based)
-n = 0.2; 
-Fa = (2*pi*n*T_push) / P; % Fixed formula from 1*pi to 2*pi
-fprintf('Thrust Generated: %.2f N\n', Fa);
-```
-</div>
+I wrote these calculations as a MATLAB script so the team could re-run them as the design changed: 
 
 ### Build and testing
 
@@ -153,9 +75,9 @@ I started with center-of-gravity tests on a scaled tube to find the ballast weig
   <img src="/assets/img/projects/MANTARAY/cg-test-2.jpg" alt="Scaled tube CG test, tilted">
   <img src="/assets/img/projects/MANTARAY/lab-pool-test.jpg" alt="Early prototype in the test pool">
 </div>
-<p style="text-align:center;color:var(--muted);font-size:14px">Early center-of-gravity and weight-distribution tests</p>
+<p style="text-align:center;color:var(--muted);font-size:14px">Proof of concepct prototyping</p>
 
-In the pool test, the servos drove the foam forward for 175 s, paused 10 s, then reversed for 175 s. The vehicle **started horizontal, pitched smoothly toward vertical, and returned to horizontal** when the foam came back — proving the concept. The pool was too shallow for a full vertical hold (the nose touched the floor), so full validation needs deeper water.
+In the pool test, the servos drove the foam forward for 175 s, paused 10 s, then reversed for 175 s. The vehicle **started horizontal, pitched smoothly toward vertical, and returned to horizontal** when the foam came back. Proving the concept. The pool was too shallow for a full vertical hold (the nose touched the floor), so full validation needed deeper waters.
 
 <div class="img-row">
   <figure><img src="/assets/img/projects/MANTARAY/pool-horizontal.jpg" alt="Prototype horizontal in pool"><figcaption>Horizontal</figcaption></figure>
@@ -174,7 +96,7 @@ In the pool test, the servos drove the foam forward for 175 s, paused 10 s, then
 
 ## 2. Navigation control system
 
-On the surface, MANTARAY steers toward each waypoint using GPS, an IMU for heading, and two thrusters in a differential-drive setup (like a tank). I modeled the full guidance loop in Simulink as four connected subsystems:
+On the surface, MANTARAY steers toward each waypoint using GPS, an IMU for heading, and two thrusters in a differential drive setup. I modeled the full guidance loop in Simulink as four connected subsystems:
 
 <figure>
   <img src="/assets/img/projects/MANTARAY/nav-simulink.png" alt="Simulink block diagram of the navigation loop">
@@ -183,7 +105,7 @@ On the surface, MANTARAY steers toward each waypoint using GPS, an IMU for headi
 
 **Bearing computation.** From the current GPS position and the target waypoint, the controller finds Δx and Δy and computes the desired heading with `atan2(Δy, Δx)`, which gives the full 360° without quadrant ambiguity.
 
-**PI heading controller.** The heading error (desired bearing minus current heading) drives a PI controller that outputs a differential thrust command. The proportional term does most of the correcting; the integral term removes steady-state error caused by currents. I left out the derivative term because water's damping already suppresses oscillation. A ±5 m waypoint acceptance radius was enough for the mission.
+**PI heading controller.** Focuses onf the heading error (desired bearing minus current heading) drives a PI controller that outputs a differential thrust command. The proportional term does most of the correcting; the integral term removes steady state error caused by currents. I left out the derivative term because water's damping already suppresses oscillation. A ±5 m waypoint acceptance radius was enough for the mission.
 
 **Turning dynamics.** The controller's torque command becomes a thrust difference between the two thrusters (τ = ΔF·d). I linearized the manufacturer's thrust curve to F = m·PWM so the controller can convert force directly to PWM commands for the ESCs. The vehicle's yaw response is modeled as τ = J·θ″ + b·θ′.
 
@@ -221,7 +143,7 @@ I designed the chassis and shifting mechanism in SolidWorks and managed the full
 </div>
 
 <div class="img-row">
-  <figure><img src="/assets/img/projects/MANTARAY/cad-iterations.jpg" alt="Design iterations of the assembly"><figcaption>Design progression</figcaption></figure>
+  <figure><img src="/assets/img/projects/MANTARAY/cad-iterations.jpg" alt="Design iterations of the assembly"><figcaption>A bit of the internal CAD assebly for the battaries and more isometric views</figcaption></figure>
   <figure><img src="/assets/img/projects/MANTARAY/cad-drawing.jpg" alt="Engineering drawing of the MANTARAY assembly"><figcaption>Assembly drawing</figcaption></figure>
 </div>
 
@@ -251,7 +173,7 @@ To make sure MANTARAY could finish a mission on one charge, I built a power budg
 
 ### Two-battery system
 
-The vehicle carries two identical 14.8 V, 15.6 Ah batteries (230.9 Wh each). The thrusters — by far the largest load — run on one, and the servos, Arduinos, and sensors run on the other. I sized both for a **3-waypoint mission with a 25% safety margin**.
+The vehicle carries two identical 14.8 V, 15.6 Ah batteries (230.9 Wh each). The bigggest power draw that had to be considered were for the thrusters. I found that with current misison targets ( number of wavpoints to hit and dives as well as using three thrusters) sizing for **3-waypoint mission with a 25% safety margin** we use 48% of one batteries energy.
 
 <div class="table-scroll">
 <table>
@@ -294,7 +216,7 @@ The vehicle carries two identical 14.8 V, 15.6 Ah batteries (230.9 Wh each). The
 
 ## Results
 
-- **Flipping mechanism proven** in pool testing — the core concept of the vehicle works.
+- **Flipping mechanism proven** in pool testing the core concept of the vehicle works.
 - **Actuators sized with a ~2× safety factor**, avoiding a custom gearbox, with a self-locking lead screw.
 - **Navigation architecture modeled and verified** in Simulink.
 - **Full vehicle integrated in one SolidWorks assembly**, from hull to antenna mast.
@@ -306,11 +228,11 @@ The vehicle carries two identical 14.8 V, 15.6 Ah batteries (230.9 Wh each). The
 
 This project took MANTARAY from a conceptual architecture to a fully realized physical prototype over the course of one year, marking a significant milestone in the development of autonomous marine instrumentation.
 
-A primary achievement was the empirical validation of the vehicle's novel flipping mechanism — the core concept was tested and proven viable. The foundational navigation architecture was established and verified independently of the main chassis, and the onboard sensor suite went through integration testing to ensure seamless connectivity and data cohesion.
+A primary achievement was the empirical validation of the vehicle's novel flipping mechanism the core concept was tested and proven viable. The foundational navigation architecture was established and verified independently of the main chassis, and the onboard sensor suite went through integration testing to ensure seamless connectivity and data cohesion.
 
 Autonomous underwater vehicles represent the future of oceanography. As the Schmidt Ocean Institute notes, AUVs let a research ship collect far more data per cruise while focusing on other tasks, with greater speed, mobility, and range than tethered ROVs. Beyond efficiency, platforms like MANTARAY address a critical safety concern: traditional data collection by scuba diving exposes researchers to volatile and potentially life-threatening environments, and autonomous profilers can replace or supplement divers to remove that risk.
 
-While this year's milestones provide a robust proof of concept, they are just the beginning. Future work will focus on full system integration, open-water field testing, and optimizing autonomous path planning. Ultimately, MANTARAY aims to give the scientific community a tool for scalable, continuous, and risk-free marine data acquisition.
+While this year's milestones provide a robust proof of concept, they are just the beginning. Future work will focus on full system integration, open water field testing, and optimizing autonomous path planning. Ultimately, MANTARAY aims to give the scientific community a tool for scalable, continuous, and risk-free marine data acquisition.
 
 ---
 
@@ -343,6 +265,6 @@ Future testing should use a hardware-in-the-loop simulation of a complete multi-
 
 ## Final thoughts
 
-Developing an underwater platform has been an incredibly rewarding endeavor. Operating in a marine environment introduces unique engineering constraints that forced our team to find simple, elegant, and unconventional solutions. Water is an unforgiving medium — its corrosive nature and hydrostatic pressure mean the very environment we set out to explore can compromise mechanical and electrical integrity. Completing a fully autonomous profiler is achievable, but it demands meticulous attention to detail and tight interdisciplinary collaboration. As the project moves into system integration and field testing, rigorous documentation, synchronized design sessions, and transparent timeline management will be vital.
+Developing an underwater platform has been an incredibly rewarding endeavor. Operating in a marine environment introduces unique engineering constraints that forced our team to find simple, elegant, and unconventional solutions. Water is an unforgiving medium, its corrosive nature and hydrostatic pressure mean the very environment we set out to explore can compromise mechanical and electrical integrity. Completing a fully autonomous profiler is achievable, but it demands meticulous attention to detail and tight interdisciplinary collaboration. As the project moves into system integration and field testing, rigorous documentation, synchronized design sessions, and transparent timeline management will be vital.
 
-Our team is deeply grateful to the Robotic Systems Laboratory for the specialized resources, technical wisdom, and guidance that made this build possible, and to our advisors for their support. We're proud of the foundations laid this year and grateful for the chance to build a platform that can make a real, positive impact on oceanographic research — and we look forward to the future iterations of MANTARAY.
+I am deeply grateful to the Robotic Systems Laboratory, Christopher Kitts and Dr.Neumann for the specialized resources, technical wisdom, and guidance that made this build possible. We're proud of the foundations laid this year and grateful for the chance to build a platform that can make a real, positive impact on oceanographic research, and I look forward to the future iterations of MANTARAY.
