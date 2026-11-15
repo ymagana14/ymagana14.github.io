@@ -1,7 +1,7 @@
 ---
 title: "MANTARAY: Autonomous Underwater Profiler"
 context: Senior Design Capstone · Santa Clara University, Robotic Systems Lab · 2025–2026
-summary: A low-cost autonomous underwater vehicle that navigates to GPS waypoints and dives to collect water-column data for marine researchers. I designed and built the lead-screw mechanism that flips the vehicle between horizontal and vertical, and developed its waypoint-navigation control system.
+summary: A low cost autonomous underwater vehicle that navigates to GPS waypoints and dives to collect water-column data (temperature, conductivity, ph. ect) for marine researchers. I designed and built the lead screw mechanism that flips between its horizontal and vertical, and developed its waypoint navigation control system.
 tags: [SolidWorks, MATLAB, Simulink, CFD, Excel, Arduino, Controls]
 image: /assets/img/projects/MANTARAY/cover.jpg
 order: 1
@@ -9,13 +9,13 @@ order: 1
 
 ## Overview
 
-Designed as part of a senior capstone project under the guidance of the Robotic Systems Laboratory (RSL), MANTARAY bridges the gap between efficient oceanographic monitoring and operational simplicity. Traditional marine data collection often relies on hazardous scuba diving or complex, expensive buoyancy-bladder mechanisms prone to sealing failures. MANTARAY solves these challenges by utilizing a novel shifting-mass flipping mechanism powered by lead screws and syntactic buoyancy foam. This design allows the vehicle to transition seamlessly between a low-drag horizontal orientation for transit and a vertical orientation for data profiling.
+Designed as part of a senior capstone project under the guidance of the Robotic Systems Laboratory (RSL) at Santa Clara, MANTARAY bridges the gap between efficient oceanographic monitoring and operational simplicity. Traditional marine data collection often relies on dangerous scuba diving missions or complex, expensive, stagnate instruments. MANTARAY solves these challenges by utilizing a mass shifting, flipping mechanism powered by lead screws and buoyancy foam. This design allows the vehicle to transition seamlessly between a low drag horizontal orientation for transit and a vertical orientation for data profiling.
 
-**Mission goals:** navigate autonomously to waypoints, dive to 30 m and collect water-column data (pH, temperature, dissolved oxygen, conductivity), and complete 3 dives in under 20 minutes — all deployable by one person from shore.
+**Mission goals:** Navigate autonomously to waypoints, dive to 30 m and collect water column data (pH, temperature, dissolved oxygen, conductivity), and complete 3 dives in under 20 minutes — all deployable idealy by one person from shore.
 
 <div class="callout" markdown="1">
-**My contributions:**
-1. **The lead-screw flipping mechanism** — designed, analyzed, built, and pool-tested it.
+**My Personal Contributions:**
+1. **The lead-screw flipping mechanism** — designed, analyzed, built, and pool tested it.
 2. **The navigation control system** — modeled the GPS waypoint guidance and PI heading controller in Simulink.
 3. **The full-vehicle CAD** — designed the chassis and shifting mechanism and managed the complete SolidWorks assembly.
 4. **The power budget** — sized the two-battery system against a full mission profile.
@@ -27,14 +27,16 @@ Designed as part of a senior capstone project under the guidance of the Robotic 
 
 ### Why the vehicle needs to flip
 
-MANTARAY travels on the surface between waypoints, then dives vertically. A long tube moving sideways through water has far more drag than one moving end-first, so the vehicle needs to be **horizontal while driving and vertical while diving** — otherwise the thrusters burn more energy and the vehicle reaches fewer waypoints per charge.
+MANTARAY travels on the surface between waypoints, then dives vertically. A long vertical sticking tube moving through the water has far more drag than one moving horizontally, so the vehicle needs to be **horizontal while driving and vertical while diving** — otherwise the thrusters burn more energy and the vehicle reaches fewer waypoints per charge.
 
-I ran CFD simulations in SolidWorks on a 5 in. × 3 ft tube to confirm this:
+Simple CFD simulations in SolidWorks on a 5 in. × 3 ft tube to confirm this:
 
 <div class="img-row">
   <figure><img src="/assets/img/projects/MANTARAY/cfd-horizontal.png" alt="CFD of a tube with flow along its length"><figcaption>Flow along the tube's length</figcaption></figure>
-  <figure><img src="/assets/img/projects/MANTARAY/cfd-vertical.png" alt="CFD of a tube with flow across it"><figcaption>Flow across the tube — much larger pressure region</figcaption></figure>
+  <figure><img src="/assets/img/projects/MANTARAY/cfd-vertical.png" alt="CFD of a tube with flow across it"><figcaption>Flow across the tube much larger pressure region</figcaption></figure>
 </div>
+
+One can see that moving braodside produces a much wider seperated wake and higher prssure drag than mvoing end on, yeilding a higher drag coefficient and much larger total drag force for the same speed. Demonstating why flipping the profiler's orientation is so important when using thrusters. 
 
 ### Choosing the approach
 
@@ -62,7 +64,85 @@ There are very few actuators made for underwater use, so we were limited to the 
 - Even in the worst case — displacing the buoyant force of the entire profiler — it needs about **1.6 N·m**, a **safety factor of ~2** on the stock servo. That meant **no custom gearbox was needed**.
 - I also checked the lowering torque to make sure the foam won't drift once positioned. It's positive, so the lead screw is **self-locking** and won't backdrive under load.
 
-I wrote these calculations as a MATLAB script so the team could re-run them as the design changed.
+I wrote these calculations as a MATLAB script so the team could re-run them as the design changed:
+
+<div class="callout code-callout" markdown="1">
+**MATLAB · Foam sizing, lead-screw torque, and backdrive check**
+
+```matlab
+clc;
+clear;
+
+% --- 1. DESIGN REQUIREMENTS & CONSTANTS ---
+rho_water = 1025;    % Density of saltwater (kg/m^3)
+rho_foam  = 192;     % Density of buoyancy foam (kg/m^3)
+g = 9.81;            % Gravity (m/s^2)
+
+% --- 2. PROFILER PROPERTIES (FIXED BODY) ---
+V_p = 0.033981464453;           % Volume of profiler hull (m^3)
+m_p = 20.4;                     % Mass of profiler (kg)
+x1 = 0.4572;                     % Distance of center of bouyacy of tube to refernce point
+x2 = 0.6858;                  % Center of Mass / LCG of the profiler (m)
+x3 = x2;                      % Rn they are the same distacance 
+
+Fg = m_p*g*x2;
+Ft = rho_water*g*V_p
+
+a = 2*m_p*x2;
+b = rho_water*V_p*x1;
+c = x3*rho_foam;
+
+V_foam = ( a - b ) / c;
+
+fprintf(" Volume of foam needed to not cause a not rotational torque: %.6f mm^3 \n",V_foam*1e9)
+
+% Calculate required length of foam block (assuming it's a cylinder)
+d_buoyancy = 0.16;    % Diameter of foam block (m)
+A_foam = (pi * (d_buoyancy/2)^2); % Cross-sectional area of foam
+Length_foam = ( V_foam/2 ) / A_foam;
+
+fprintf("Length of boyancy foam needed: %.6f mm\n", Length_foam);
+
+% Lead Screw Characteristics (ACME 3/8'')
+D = 0.0127; % Major diameter
+P = 0.00254; % Pitch (m)
+a = 14.5; % thread wall angle in degrees 
+d_p = 0.01143; % pitch diameter in m 
+
+% Net Buoyancy (The force pushing BACK against your system)
+F_load = V_foam*rho_foam*g;
+
+% Calculating Torque
+f = 0.2; % coefficient of friction
+d_c = 2*D; % collar diameter
+f_c = 0.15; % collar coefficient of friction
+
+T_c = f_c * F_load * (d_c/2); 
+T_push = ((F_load * d_p)/2) * (((f * pi * d_p) + P * cosd(a)) / ...
+         ((pi * d_p * cosd(a)) - (f * P))) + T_c;
+
+% --- BACKDRIVE CHECK ---
+% Lead angle (lambda) is the angle of the threads
+lambda = atand(P / (pi * d_p));
+
+% Torque required to LOWER the load (if this is negative, it will backdrive)
+T_lower = ((F_load * d_p)/2) * (((f * pi * d_p * cosd(a)) - (P)) / ...
+          ((pi * d_p * cosd(a)) + (f * P))) + T_c;
+
+fprintf('Torque needed to move load: %.6f N*m\n', T_push);
+
+if T_lower > 0
+    fprintf('STATUS: The system is SELF-LOCKING. No backdrive will occur.\n');
+else
+    fprintf('STATUS: WARNING! The system may BACKDRIVE. External force exceeds friction.\n');
+end
+
+% Thrust Generated (Efficiency-based)
+n = 0.2; 
+Fa = (2*pi*n*T_push) / P; % Fixed formula from 1*pi to 2*pi
+fprintf('Thrust Generated: %.2f N\n', Fa);
+```
+</div>
 
 ### Build and testing
 

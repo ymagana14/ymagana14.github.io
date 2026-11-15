@@ -161,6 +161,8 @@ a:hover { text-decoration: underline; }
   border-radius: 8px; padding: 14px 18px; margin: 24px 0;
 }
 .callout p { margin: 0; }
+.code-callout p { margin-bottom: 10px; }
+.code-callout pre { margin: 0; max-height: 460px; overflow: auto; background: var(--bg); font-size: 13px; line-height: 1.5; }
 .prose table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0 24px; }
 .prose th, .prose td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; }
 .prose th { background: var(--bg-soft); font-weight: 600; }
