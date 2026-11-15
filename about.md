@@ -77,6 +77,14 @@ Maintained the automated systems of North America's largest producer of fresh fo
 - **School of Engineering Hiring Committee** — One of two student representatives on the committee hiring the School of Engineering's Assistant Dean (2025)
 - **Summer Engineering Seminar Mentor** — Mentored 60 high school sophomores and juniors interested in engineering (Summer 2025)
 
+## Resume
+
+<div class="callout resume-callout" markdown="1">
+Want the full picture on one page? Download a PDF copy of my resume.
+
+<a class="button" href="/assets/Ysidro_Magana_Resume.pdf" download="Ysidro_Magana_Resume.pdf">Download resume (PDF)</a>
+</div>
+
 ## Contact
 
 The best way to reach me is through [LinkedIn](https://www.linkedin.com/in/ysidro-magana).

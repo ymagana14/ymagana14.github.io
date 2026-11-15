@@ -162,6 +162,13 @@ a:hover { text-decoration: underline; }
 }
 .callout p { margin: 0; }
 .code-callout p { margin-bottom: 10px; }
+.resume-callout { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.button {
+  display: inline-block; padding: 10px 18px; border-radius: 8px;
+  background: var(--accent); color: #fff; font-weight: 600; font-size: 15px;
+}
+.button:hover { text-decoration: none; filter: brightness(1.1); }
+[data-theme="dark"] .button { color: #0f1115; }
 .code-callout pre { margin: 0; max-height: 460px; overflow: auto; background: var(--bg); font-size: 13px; line-height: 1.5; }
 .prose table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0 24px; }
 .prose th, .prose td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; }
