@@ -126,6 +126,28 @@ a:hover { text-decoration: underline; }
 .prose pre { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; }
 .prose pre code { background: none; padding: 0; font-variant-ligatures: none; }
 .about { max-width: 760px; padding-top: 40px; padding-bottom: 80px; }
+.about-intro { display: grid; grid-template-columns: 240px 1fr; gap: 28px; align-items: start; margin-bottom: 8px; }
+.prose .about-photo { width: 100%; margin: 0; }
+@media (max-width: 640px) {
+  .about-intro { grid-template-columns: 1fr; }
+  .prose .about-photo { max-width: 280px; }
+}
+.timeline { border-left: 2px solid var(--border); padding-left: 22px; margin: 8px 0 8px 4px; }
+.timeline h3 { position: relative; margin-bottom: 2px; }
+.timeline h3::before {
+  content: ""; position: absolute; left: -29px; top: .45em;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--bg);
+}
+.timeline h3 { display: flex; align-items: center; gap: 12px; }
+.prose .timeline .job-logo {
+  width: 48px; height: 48px; flex-shrink: 0; margin: 0;
+  object-fit: contain; padding: 5px; background: #fff;
+  border: 1px solid var(--border); border-radius: 10px;
+}
+.timeline h3:has(.job-logo)::before { top: 18px; }
+.timeline h3 + .when { margin-left: 60px; }
+.timeline .when { font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--muted); margin: 0 0 8px; }
 
 /* Figures with captions, and rows of images shown side by side */
 .prose figure { margin: 24px 0; }

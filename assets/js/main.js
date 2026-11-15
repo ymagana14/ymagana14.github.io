@@ -23,7 +23,7 @@ document.querySelectorAll('.card').forEach((card) => {
 // Click any image on a project page to view it full screen.
 // Close with Esc, the × button, or a click on the dark background; ← / → step through images.
 (() => {
-  const images = [...document.querySelectorAll('.project-hero, .prose img')];
+  const images = [...document.querySelectorAll('.project-hero, .prose img:not(.job-logo)')];
   if (!images.length) return;
 
   const box = document.createElement('div');
