@@ -135,6 +135,19 @@ Most components connect straight to the Arduino Mega, 5 V, or ground, so the wir
 
 ---
 
+## 6. Inside the cabinet: the internal circuit
+
+Under the playfield, the schematic becomes real wiring. The Arduino Mega sits in the middle on breadboards that split power and signals to every part of the game. Bundled yellow jumpers carry the 7-segment display, blue and red runs go up to the joysticks and scoreboard LEDs, and the DFPlayer audio module and volume potentiometer sit on their own board to the right. Green screw terminals give the servos and LED strips solid connections that can be unplugged for repairs, and a barrel-jack adapter brings in 5 V from the wall supply.
+
+<figure>
+  <img src="/assets/img/projects/penalty-shootout/internal-circuit.jpg" alt="Internal wiring of the arcade game: Arduino Mega on breadboards with jumper wires, screw terminals, and the audio module">
+  <figcaption>The internal circuit: Arduino Mega, breadboards, screw terminals, and the DFPlayer audio module. Click to zoom in.</figcaption>
+</figure>
+
+Soldering, crimping, and routing all of these connections — and keeping them reliable while the cabinet was opened and closed for debugging — was a big part of the build.
+
+---
+
 ## What I learned
 
 - **Integration is the hard part.** Each part worked alone quickly; making them run together in one game loop took most of the time.
