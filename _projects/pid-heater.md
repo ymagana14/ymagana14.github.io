@@ -1,7 +1,7 @@
 ---
 title: "Thermal Chamber: From State Machine to PID Control"
 context: MECH 208 Advanced Mechatronics II · Santa Clara University · Winter 2026
-summary: A small heated chamber I used to work through the full ladder of temperature control — a hardware state machine built from logic gates, then open-loop, proportional, feedforward, PI, and PID control in software — comparing each against a Simulink model.
+summary: Applied different control theromes to control the temoerature of a chamber. Built a hardware state machine  from logic gates, then built open-loop, proportional, feedforward, PI, and PID control in software — comparing along the process hardware with software control.
 tags: [Arduino, C++, PID Control, Digital Logic, Simulink, MATLAB, Python]
 image: /assets/img/projects/pid-heater/cover.jpg
 order: 4
@@ -9,7 +9,7 @@ order: 4
 
 ## Overview
 
-The thermal chamber is a box with a heater, a temperature sensor, an Arduino, and an LCD. I used it to implement one control strategy after another and see how each one behaves on real hardware: starting with simple on/off control built from logic gates, then moving to software controllers with increasing sophistication.
+The thermal chamber is a box with a heater, a temperature sensor, an Arduino, and an LCD screen. I used it to implement one control strategy after another and see how each one behaves on real hardware: starting with simple on/off control built from logic gates, then moving to software controllers with increasing sophistication.
 
 <div class="callout" markdown="1">
 **Solo project** · **Instructor:** Dr. Kitts
@@ -23,7 +23,7 @@ The heater is driven by a PWM signal from the Arduino. Every controller samples 
 
 The first controller keeps the chamber between two thresholds with **hysteresis**: the heater turns on below a low temperature and stays on until it passes a high temperature, then stays off until the chamber cools back down. This prevents the heater from rapidly switching on and off around a single setpoint.
 
-I designed it the way digital logic is designed by hand: draw the **state machine**, turn it into a **truth table** (current state + temperature inputs → next state + heater output), solve for the **Boolean equation**, and build the **logic circuit** with a flip-flop holding the state.
+I designed it first by hand drawing the digital logic and state machine. I then turned the state matchine into a  **truth table** (current state + temperature inputs → next state + heater output), solved for the **Boolean equation**, and build the **logic circuit** with a flip-flop holding the state.
 
 <div class="img-row">
   <figure><img src="/assets/img/projects/pid-heater/state-machine.jpg" alt="State machine diagram"><figcaption>State machine: heating and cooling states</figcaption></figure>
@@ -68,7 +68,7 @@ With no feedback, the controller drives the heater blindly and assumes the syste
   <figcaption>Open-loop test targeting 76.1 °F</figcaption>
 </figure>
 
-Open loop can reach a target, but only after a lot of trial and error — and it can't correct for any disturbance.
+Open loop can reach a target, but only after a lot of trial and error, and it can't correct for any disturbance.
 
 ---
 
@@ -97,7 +97,7 @@ Adding feedback, the heater's PWM is set by the error between the setpoint and t
   <figure><img src="/assets/img/projects/pid-heater/p-kp85.jpg" alt="P control Kp 85"><figcaption>Kp = 85</figcaption></figure>
 </div>
 
-The green PWM trace shows what's happening: as the temperature rises, the drive effort falls. At Kp = 15 it settles around 45 PWM — only enough to hold about 80 °F, so a steady-state error remains. Higher gains shrink that error. A Simulink model with the same gain predicted the same ~5 °F error:
+The green PWM trace shows what's happening: as the temperature rises, the drive effort falls. At Kp = 15 it settles around 45 PWM, only enough to hold about 80 °F, so a steady-state error remains. Higher gains shrink that error. A Simulink model with the same gain predicted the same ~5 °F error:
 
 <div class="img-row">
   <figure><img src="/assets/img/projects/pid-heater/sim-p-diagram.jpg" alt="Simulink P control model"><figcaption>Simulink model</figcaption></figure>
@@ -127,7 +127,7 @@ Compared with pure proportional control at the same gain, the steady-state error
 
 ## 5. PI control and integral windup
 
-Adding an integral term turns the response from first-order to second-order, which shows up as overshoot — most clearly in the PWM signal oscillating after the setpoint is reached. The underdamped response was small in practice and matched the Simulink model.
+Adding an integral term turns the response from first-order to second-order, which shows up as overshoot, most clearly in the PWM signal oscillating after the setpoint is reached. The underdamped response was small in practice and matched the Simulink model.
 
 <figure>
   <img src="/assets/img/projects/pid-heater/pi-data.jpg" alt="PI control data">
@@ -139,7 +139,7 @@ Adding an integral term turns the response from first-order to second-order, whi
   <figure><img src="/assets/img/projects/pid-heater/sim-pi-response.jpg" alt="Simulated PI response"><figcaption>Simulated PI response</figcaption></figure>
 </div>
 
-**Integral windup.** I also demonstrated windup on purpose: I set the target to 110 °F, above what the heater can reach, so the integral sum kept growing. When I lowered the setpoint to 85 °F, the integral took about **5 minutes** to unwind to zero before the controller let the chamber cool.
+Something durring this project I was interested in invetigating was **Integral windup.** wich I tried to demonstate on purpose: I set the target to 110 °F, above what the heater can reach, so the integral sum kept growing. When I lowered the setpoint to 85 °F, the integral took about **5 minutes** to unwind to zero before the controller let the chamber cool.
 
 <figure>
   <img src="/assets/img/projects/pid-heater/pi-windup.jpg" alt="Integral windup plot">
@@ -158,6 +158,8 @@ Finally, I implemented full PID with **Kp = 30, Ki = 0.2, Kd = 15** and logged e
 </figure>
 
 The proportional term does most of the work driving the temperature up. As the temperature nears the setpoint, the integral term takes over and pulls out the remaining steady-state error. Because a thermal system responds slowly, the derivative term contributes very little — something the Simulink model also showed.
+
+I built this circuit using op-amps. I started by studying common op-amp configurations and how each one can perform a mathematical operation: multiplication, division, addition, subtraction, and comparison. Once I understood how these circuits work as analog calculators, I applied that knowledge to PID control. A PID controller is built from these same operations: it scales the error signal by a gain, integrates it, differentiates it, and sums the three results.
 
 <div class="img-row">
   <figure><img src="/assets/img/projects/pid-heater/sim-pid-diagram.jpg" alt="Simulink PID model"><figcaption>Simulink PID model</figcaption></figure>

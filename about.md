@@ -21,6 +21,13 @@ I'm currently an **Engineering Technician at Tesla**, running and maintaining te
 
 </div>
 </div>
+## Resume
+
+<div class="callout resume-callout" markdown="1">
+Want the full picture on one page? Download a PDF copy of my resume.
+
+<a class="button" href="/assets/Ysidro_Magana_Resume.pdf" download="Ysidro_Magana_Resume.pdf">Download resume (PDF)</a>
+</div>
 
 ## Experience
 
@@ -71,19 +78,41 @@ Maintained the automated systems of North America's largest producer of fresh fo
 - **Manufacturing:** SLS 3D printing (certified), fixture design, Design of Experiments
 - **Languages:** English, Spanish (fluent)
 
-## Leadership
+## Leadership & Community Service
 
-- **SHPE (Society of Hispanic Professional Engineers)** — President (Jan 2025 – Mar 2026), Treasurer (Sep 2023 – Jan 2025)
-- **School of Engineering Hiring Committee** — One of two student representatives on the committee hiring the School of Engineering's Assistant Dean (2025)
-- **Summer Engineering Seminar Mentor** — Mentored 60 high school sophomores and juniors interested in engineering (Summer 2025)
+Giving back has been as important to me as anything I've built. These are the communities I've been proud to serve.
 
-## Resume
+<div class="community-grid">
 
-<div class="callout resume-callout" markdown="1">
-Want the full picture on one page? Download a PDF copy of my resume.
+<div class="community-card" markdown="1">
+<p class="community-role">President · Treasurer</p>
+### SHPE — Society of Hispanic Professional Engineers
+<p class="when">Santa Clara University · Sep 2023 – Mar 2026</p>
 
-<a class="button" href="/assets/Ysidro_Magana_Resume.pdf" download="Ysidro_Magana_Resume.pdf">Download resume (PDF)</a>
+As Treasurer and then President of SCU's SHPE chapter, I worked to uplift and support underrepresented students in STEM — building a network where members could find mentors, internships, and a sense of belonging in engineering. Leading the chapter taught me to communicate, delegate, and build a team around a shared mission.
 </div>
+
+<div class="community-card" markdown="1">
+<p class="community-role">Mentor</p>
+### Summer Engineering Seminar (SES)
+<p class="when">Santa Clara University · Jun – Sep 2025</p>
+
+Mentored 60 high school sophomores and juniors interested in pursuing engineering, guiding them through hands-on engineering projects and sharing what the path to an engineering degree really looks like.
+</div>
+
+<div class="community-card" markdown="1">
+<p class="community-role">Resident Assistant</p>
+### Residence Life
+<p class="when">Santa Clara University</p>
+
+As an RA, I supported the students living on my floor — building community, being a first point of contact when residents needed help, and helping create a safe, welcoming place to live.
+</div>
+
+</div>
+
+**Also:**
+- **Community Service & Leadership Award** — Department of Mechanical Engineering, Santa Clara University
+- **School of Engineering Hiring Committee** — One of two student representatives on the committee hiring the School of Engineering's Assistant Dean (2025)
 
 ## Contact
 

@@ -1,7 +1,7 @@
 ---
 title: "GOAL!! Penalty Shootout Arcade Game"
 context: MECH 207 Advanced Mechatronics I · Santa Clara University · Dec 2025
-summary: A two-player, coin-operated arcade game built around a soccer penalty shootout. Players aim and dive with arcade joysticks while servos move the goalie and penalty taker, LED strips track the score, and an MP3 module plays stadium audio — all run by an Arduino Mega.
+summary: A two-player, coin-operated arcade game built around a soccer penalty shootout. Players aim and dive with arcade joysticks while servos move the goalie and penalty taker, LED strips track the score, and an MP3 module plays club anthems  all run on an Arduino Mega.
 tags: [Arduino, C++, SolidWorks, Servos, LEDs, Soldering]
 image: /assets/img/projects/penalty-shootout/cover.jpg
 order: 2
@@ -9,13 +9,13 @@ order: 2
 
 ## Overview
 
-GOAL!! turns the drama of a soccer penalty shootout into a tabletop arcade game. One player shoots, the other guesses where to dive, and the roles swap every round — first to out-score the other after five shots each wins, with sudden death if they're tied.
+GOAL!! turns the drama of a soccer penalty shootout into a tabletop arcade game. One player shoots, the other guesses where to dive, and the roles swap every round. First to out-score the other after five shots wins; with sudden death if they're tied.
 
 <div class="callout" markdown="1">
-**Team:** Ysidro Magana and Elias Pedroza · **Instructor:** Dr. Kitts
+**Team:** Ysidro Magana and Elias Pedroza
 
 **My role:**
-- Designed the enclosure in SolidWorks, and soldered and crimped the wiring for the 2 actuators, 2 sensors, and 5 mechanical hardware interfaces.
+- Designed the enclosure in SolidWorks, soldered and crimped the wiring for the 2 actuators, 2 sensors, and 5 mechanical hardware interfaces.
 - Tested, validated, and assembled the C++ Arduino game logic, sensor integration, and sound feedback.
 </div>
 
@@ -34,9 +34,9 @@ In a real penalty shootout, each team takes five alternating shots one-on-one ag
 
 **1. Insert a penny.** With the game powered on, everything waits until a penny passes through a photo-interrupter. That triggers the Champions League anthem and a 17-second countdown on the display while the game gets ready.
 
-**2. Pick your spot.** A whistle blows and a 10-second timer starts. The shooter picks a target — top left, top right, bottom left, bottom right, or middle — while the goalie tries to guess it, both using arcade joysticks. LEDs next to each joystick light up to show where each player is aiming. With 5 seconds left, the penalty-taker figure starts running up to the ball, driven by a continuous-rotation servo.
+**2. Pick your spot.** A whistle blows and a 10-second timer starts. The shooter picks a target (top left, top right, bottom left, bottom right, or middle) while the goalie tries to guess it, both using arcade joysticks. LEDs next to each joystick light up to show where each player is aiming. With 5 seconds left, the penalty-taker figure starts running up to the ball, driven by a continuous rotation servo.
 
-**3. Reveal.** When time runs out, the two choices are compared. If the goalie guessed wrong, the display reads **GOAL**, a cheer plays, and the shooter's next score LED turns green. If the goalie guessed right, it reads **SAVE**, a buzzer plays, and the LED turns red. Either way, the goalie servo dives to the spot the goalie chose (5° bottom right, 45° top right, 90° middle, 135° top left, 175° bottom left).
+**3. Reveal.** When time runs out, the two choices are compared. If the goalie guessed wrong, the display reads **GOAL**, a cheer plays, and the shooter's next score LED turns green. If the goalie guessed right, it reads **SAVE**, a buzzer plays, and the LED turns red. Either way, the goalie servo dives to the spot the player choses.
 
 **4. Switch sides.** The players swap roles and repeat for 10 rounds, so each shoots 5 times. The team names on the scoreboard are **MAN** (Manchester United) and **BAR** (Barcelona). The winner gets their club's song, and the display reads **END**.
 
@@ -75,7 +75,7 @@ In a real penalty shootout, each team takes five alternating shots one-on-one ag
 
 As mechanical engineering students, the code was one of the hardest parts. Getting each component working on its own was straightforward; getting them all to work together following the game logic took the most time. Many of the parts came with little documentation, so the continuous servo, joysticks, LED strips, audio, and 7-segment display each needed hardware and software calibration. It was also our first project combining mechanical, electrical, and software design into one product.
 
-Each round runs in three phases — **countdown**, **reveal**, and **reset**. The reveal is the heart of the game:
+Each round runs in three phases **countdown**, **reveal**, and **reset**. The reveal is the heart of the game:
 
 ```cpp
 // --- PHASE 2: REVEAL ---
@@ -110,7 +110,7 @@ The game ends only after 10 rounds **and** when the score isn't tied, which is w
 
 ## 4. Design: from sketches to CAD
 
-We started with hand sketches of the layout — players on either side, the goal and scoreboard in the back, and a coin slot in the middle — then modeled a concept in SolidWorks before finalizing the enclosure.
+We started with hand sketches of the layout, players on either side, the goal and scoreboard in the back, and a coin slot in the middle, then modeled a concept in SolidWorks before finalizing the enclosure.
 
 <div class="img-row">
   <figure><img src="/assets/img/projects/penalty-shootout/sketch-front-view.jpg" alt="Hand sketch of the game's front and top views"><figcaption>Early sketch: front and top views</figcaption></figure>
@@ -144,7 +144,7 @@ Under the playfield, the schematic becomes real wiring. The Arduino Mega sits in
   <figcaption>The internal circuit: Arduino Mega, breadboards, screw terminals, and the DFPlayer audio module. Click to zoom in.</figcaption>
 </figure>
 
-Soldering, crimping, and routing all of these connections — and keeping them reliable while the cabinet was opened and closed for debugging — was a big part of the build.
+Soldering, crimping, and routing all of these connections, and keeping them reliable while the cabinet was opened and closed for debugging was a big part of the build.
 
 ---
 

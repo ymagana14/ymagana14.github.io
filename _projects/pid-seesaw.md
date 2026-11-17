@@ -12,10 +12,10 @@ order: 3
 I built a balancing seesaw as a dual-feedback control system with two goals: **control the angle of the beam**, then **control the position of a ball rolling on it**. The beam is tilted by a thrust differential between two brushless motors mounted on opposite ends, driven by PWM signals to their ESCs from a PID controller on an Arduino.
 
 <div class="callout" markdown="1">
-**Solo project** · **Instructor:** Dr. Kitts
+**Project Achievments**
 
 - **Angle control:** achieved — the beam tracks commanded angles reliably.
-- **Position control:** came close — the ball held the setpoint briefly, and I traced the remaining problem to sensor noise from the beam's geometry.
+- **Position control:** came close — the ball held the setpoint briefly, and traced the remaining problem to sensor noise from the ultrasonic distance sensor.
 </div>
 
 <figure class="video">
@@ -34,13 +34,13 @@ I built a balancing seesaw as a dual-feedback control system with two goals: **c
   <figcaption>Component diagram: two thrusters and ESCs, LiPo batteries, the pivot potentiometer, the ultrasonic sensor, and the Arduino</figcaption>
 </figure>
 
-I first built the seesaw as an unstable system, then added weight below the axis of rotation to make it **inherently stable** — a mechanical change that made the control problem much more manageable.
+When I first built the seesaw I built it as an unstable system, then added weight below the axis of rotation to make it **inherently stable**, a mechanical change that made the control problem much more manageable.
 
-**Angle sensing.** I started with a rotary encoder, but its readings were too coarse and drifted. I switched to a **10k potentiometer** fixed to the pivot: with a 5 V reference across it, its output voltage changes linearly with beam angle. A 5 V regulator kept the reference steady, and an **op-amp buffer** between the potentiometer and the Arduino eliminated the noise that had been scattering the readings. With some 3D-printed attachments, this setup was very reliable.
+For angle sensing, I started with a rotary encoder, but its readings were too coarse and found that the angle reading would drift. I switched to a **10k potentiometer** fixed to the pivot: with a 5 V reference across it, its output voltage changes linearly with beam angle. A 5 V regulator kept the reference steady, and an **op-amp buffer** between the potentiometer and the Arduino eliminated the noise that had been scattering the angle readings. With some 3D-printed attachments, this setup was very reliable.
 
-**Position sensing.** An **HC-SR04 ultrasonic sensor** at one end measures the ball's distance by timing an echo and converting it with the speed of sound (0.0343 cm/µs).
+When it came to snesing the position of the ping pong ball a **HC-SR04 ultrasonic sensor** was used and attached to one end of the seesaw, measuring the ball's distance by timing an echo and converting it with the speed of sound (0.0343 cm/µs) to get a distance measurment.
 
-**Actuation.** Two **D2836 outrunner brushless motors** provided plenty of thrust, but they were harder to control than expected — even with ESCs, they need careful timing and power delivery. In hindsight, brushed motors, whose thrust tracks voltage directly, would have been easier.
+When it came to actuation two **D2836 outrunner brushless motors** provided plenty of thrust, but they were harder to control than expected as even with ESCs, they need careful timing on power delivery. In hindsight, brushed motors, whose thrust tracks voltage directly, would have been easier.
 
 ---
 
@@ -53,12 +53,12 @@ The beam's angle is a **second-order system**: differential thrust creates a tor
   <figcaption>Natural response after a nudge, measured as potentiometer voltage</figcaption>
 </figure>
 
-From this response I used the **logarithmic decrement** to find the damping ratio, then the damped period to find the natural frequency:
+From this response I used the **logarithmic decrement** to find the damping ratio, then used the damped period to find the natural frequency:
 
 <p class="formula">(1/n)·ln(y₁/y₂) = 2πζ / √(1 − ζ²)   →   ζ = 0.143</p>
 <p class="formula">f_d = 1/T_d,   f_n = f_d / √(1 − ζ²),   ω_n = 2π·f_n   →   ω_n = 3.92 rad/s</p>
 
-Plugging these into the standard second-order form gave the plant's transfer function, which I used in a Simulink model of the PID loop:
+Plugging these values into the standard second-order form gave the plant's transfer function, which I used in a Simulink model of the PID loop:
 
 <p class="formula">G(s) = ω_n² / (s² + 2ζω_n·s + ω_n²) = 15.38 / (s² + 1.12s + 15.38)</p>
 
@@ -73,7 +73,7 @@ The simulation predicted a near-critically damped response with almost no oscill
 
 ## 3. Angle control on hardware
 
-On the real seesaw, the PID output becomes a **differential PWM command**: one motor speeds up and the other slows down around a hover value, with a slew-rate limit so the ESCs aren't jolted.
+On the real seesaw, the PID output becomes a **differential PWM command**: one motor speeds up and the other slows down around a hover value, with a slew-rate added to make sure the thrusters don't jolt with thrust.
 
 ```cpp
 float pTerm = Kp * error;
@@ -95,7 +95,7 @@ I also made the gains and setpoint adjustable live over serial, and streamed eac
   <figcaption>Measured angle control: response vs. setpoint, plus the proportional, integral, and derivative efforts</figcaption>
 </figure>
 
-The real system was **more underdamped than the simulation predicted**, likely from effects that are hard to model — nonlinear friction in the pivot potentiometer and aerodynamic drag from the propellers. Through experimental tuning, the best balance of low overshoot and fast rise time was:
+The real system was **more underdamped than the simulation predicted**, likely from effects that are hard to model such as nonlinear friction in the pivot point. Through experimental tuning, the best balance of low overshoot and fast rise time was:
 
 <div class="table-scroll">
 <table>
@@ -112,7 +112,7 @@ The real system was **more underdamped than the simulation predicted**, likely f
 
 ## 4. Position control attempt
 
-Controlling the ball's position turns this into a **fourth-order system**: the beam angle drives the ball's acceleration, which integrates to velocity and then position — two more integrations on top of the angle dynamics.
+Controlling the ball's position turns this into a **fourth-order system**: the beam angle drives the ball's acceleration, which integrates to velocity and then position two additional integrations on top of the angle dynamics.
 
 **Cascade control.** My first approach was a cascade architecture, where an outer position loop sets the angle setpoint for the inner angle loop.
 
@@ -128,13 +128,13 @@ Balancing the gains between two interacting loops proved extremely difficult, so
   <figcaption>Single-loop position control: brief success at the 17 cm setpoint, then oscillation</figcaption>
 </figure>
 
-Between 7.5 and 7.6 seconds, the ball **stabilized at the 17 cm setpoint** — but at other setpoints it oscillated significantly. Digging into the data, I found heavy noise in the ultrasonic readings and traced it to the **mechanical design**: the beam was slightly wider than the ball, so the ball could drift sideways and the sensor would sometimes miss it and read the back wall about 30 cm away. The next step would be to remove that sideways freedom so the sensor only ever sees the ball.
+Between 7.5 and 7.6 seconds, the ball **stabilized at the 17 cm setpoint** but at other setpoints it oscillated significantly. Digging into the data, I found heavy noise in the ultrasonic readings and traced it to a mechanical design issue being that: the beam rail was slightly wider than the ball, so the ball could drift sideways and the sensor would sometimes miss it and read the back wall about 30 cm away. The next step would be to remove that sideways freedom so the sensor only ever sees the ball and not the wall on the other side.
 
 ---
 
 ## What I learned
 
 - **Mechanical design shapes the control problem.** Adding weight below the pivot made the system stable, and a too-wide beam made position control unreliable. Good mechanical choices make the software easier.
-- **Model, then verify.** An impulse test gave a usable transfer function, but real friction and drag still made the hardware behave differently than the simulation.
-- **Log everything.** Streaming each PID term and plotting it showed exactly why the controller behaved the way it did — including the sensor problem.
+- **Model, then verify.** An impulse test gave a usable transfer function, but real phisical phenomenas still made the hardware behave differently than the simulation.
+- **Log everything.** Streaming each PID term and plotting it showed exactly why the controller behaved the way it did wich allowed me to root cause the issue I was expirencing.
 - These lessons carried directly into the navigation controller for my senior design project, [MANTARAY](/projects/mantaray/).
